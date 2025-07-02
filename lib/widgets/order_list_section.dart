@@ -6,10 +6,6 @@ class OrderListSection extends StatelessWidget {
 
   const OrderListSection({super.key, required this.orders});
 
-  String _emailId(String email) {
-    return email.split('@').first;
-  }
-
   @override
   Widget build(BuildContext context) {
     final sortedOrders = [...orders]
@@ -39,7 +35,7 @@ class OrderListSection extends StatelessWidget {
             return DataRow(cells: [
               DataCell(Text(DateFormat('yyyy-MM-dd HH:mm').format(order['createdAt']))),
               DataCell(Text(order['title'])),
-              DataCell(Text(_emailId(order['email']))),
+              DataCell(Text(order['user'])),
               DataCell(
                 Text(
                   order['matched'] ? '매칭' : '미매칭',
