@@ -115,14 +115,14 @@ class _DashboardPageState extends State<DashboardPage> {
 
       final userData = userDoc.data();
       final email = userData?['email'] ?? 'unknown@email.com';
-      final nickname = userData?['displayName'] ?? 'Unknown';
+      final displayName = userData?['displayName'] ?? 'Unknown';
 
       orders.add({
         'createdAt': (d['createdAt'] as Timestamp).toDate(),
         'title':
         '${d['itemType'] ?? '화물'} · ${d['weight'] ?? '?'}kg · ${d['vehicleType'] ?? '차량 미지정'}',
-        'user': '$nickname ($email)',
-        'matched': d['status'] == '매칭완료',
+        'user': '$displayName ($email)',
+        'status': d['status'] ?? '알 수 없음',
       });
     }
 

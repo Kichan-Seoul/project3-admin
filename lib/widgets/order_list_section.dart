@@ -9,13 +9,7 @@ class OrderListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sortedOrders = [...orders]
-      ..sort((a, b) {
-        // 미매칭 우선 → 최신순 정렬
-        if (a['matched'] != b['matched']) {
-          return a['matched'] ? 1 : -1;
-        }
-        return b['createdAt'].compareTo(a['createdAt']);
-      });
+      ..sort((a, b) => b['createdAt'].compareTo(a['createdAt']));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,24 +21,38 @@ class OrderListSection extends StatelessWidget {
         DataTable(
           columns: const [
             DataColumn(label: Text('주문일')),
-            DataColumn(label: Text('제목')),
+            DataColumn(label: Text('주문내용')),
             DataColumn(label: Text('주문자')),
-            DataColumn(label: Text('매칭 여부')),
+            DataColumn(label: Text('상태')),
+            DataColumn(label: Text('정산')),
           ],
           rows: sortedOrders.map((order) {
+            final status = order['status'];
+            final isSettled = status == '대금 지불 완료';
+
             return DataRow(cells: [
               DataCell(Text(DateFormat('yyyy-MM-dd HH:mm').format(order['createdAt']))),
               DataCell(Text(order['title'])),
               DataCell(Text(order['user'])),
-              DataCell(
-                Text(
-                  order['matched'] ? '매칭' : '미매칭',
-                  style: TextStyle(
-                    color: order['matched'] ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10
-                  ),
+              DataCell(Text(
+                status,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: isSettled
+                      ? Colors.green
+                      : (status == '배송중' ? Colors.blue : Colors.black),
                 ),
+              )),
+              DataCell(
+                isSettled
+                    ? ElevatedButton(
+                  onPressed: () {
+                    // 정산 처리 로직 연결 예정
+                    debugPrint("정산 처리: ${order['title']}");
+                  },
+                  child: const Text('정산'),
+                )
+                    : const Text('-', style: TextStyle(color: Colors.grey)),
               ),
             ]);
           }).toList(),
